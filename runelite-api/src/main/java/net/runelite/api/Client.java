@@ -848,7 +848,7 @@ public interface Client extends GameEngine
 	 *
 	 * @return the world areas
 	 */
-	Area[] getMapAreas();
+	MapElementConfig[] getMapElementConfigs();
 
 	/**
 	 * Gets a sprite of the map scene
@@ -1425,6 +1425,7 @@ public interface Client extends GameEngine
 	 *
 	 * @return the collision data
 	 */
+	@Nullable
 	CollisionData[] getCollisionMaps();
 
 	@VisibleForDevtools
@@ -1568,4 +1569,14 @@ public interface Client extends GameEngine
 	int getRasterizer3D_clipMidY2();
 
 	void checkClickbox(Model model, int orientation, int pitchSin, int pitchCos, int yawSin, int yawCos, int x, int y, int z, long hash);
+
+	/**
+	 * Sets if a widget is in target mode
+	 */
+	void setSpellSelected(boolean selected);
+
+	/**
+     * Returns client item composition cache
+	 */
+	NodeCache getItemCompositionCache();
 }

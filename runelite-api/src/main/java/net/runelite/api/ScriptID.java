@@ -46,6 +46,24 @@ public final class ScriptID
 	public static final int CHATBOX_INPUT = 96;
 
 	/**
+	 * Opens the Private Message chat interface
+	 *
+	 * Jagex refers to this script as {@code meslayer_mode6}
+	 * <ul>
+	 * <li> String Player to send private message to</li>
+	 * </ul>
+	 */
+	public static final int OPEN_PRIVATE_MESSAGE_INTERFACE = 107;
+
+	/**
+	 * Rebuilds the text input widget inside the chat interface
+	 * <ul>
+	 * <li> String Message Prefix. Only used inside the GE search interfaces
+	 * </ul>
+	 */
+	public static final int CHAT_TEXT_INPUT_REBUILD = 222;
+
+	/**
 	 * Layouts the bank widgets
 	 *
 	 * Takes 13 widget ids of various parts of the bank interface
@@ -66,6 +84,23 @@ public final class ScriptID
 	 * Inverse of RESET_CHATBOX_INPUT
 	 */
 	public static final int CLEAR_CHATBOX_PANEL = 677;
+
+	/**
+	 * Builds the chatbox input widget
+	 */
+	public static final int CHAT_PROMPT_INIT = 223;
+
+	/**
+	 * Queries the completion state of a quest by its struct id
+	 * <ul>
+	 * <li> int (struct) The id of the quest
+	 * </ul>
+	 * Returns
+	 * <ul>
+	 * <li> int (QuestState) the normalized state of the quest
+	 * </ul>
+	 */
+	public static final int QUESTLIST_PROGRESS = 2267;
 
 	/**
 	 * Updates the Diary/Quest interface's scrollbar

@@ -76,18 +76,20 @@ public class InfoBoxManager
 
 	public void removeInfoBox(InfoBox infoBox)
 	{
-		log.debug("Removing InfoBox {}", infoBox);
-		infoBoxes.remove(infoBox);
-
-		refreshInfoBoxes();
+		if (infoBoxes.remove(infoBox))
+		{
+			log.debug("Removed InfoBox {}", infoBox);
+			refreshInfoBoxes();
+		}
 	}
 
 	public void removeIf(Predicate<InfoBox> filter)
 	{
-		log.debug("Removing InfoBoxes for filter {}", filter);
-		infoBoxes.removeIf(filter);
-
-		refreshInfoBoxes();
+		if (infoBoxes.removeIf(filter))
+		{
+			log.debug("Removed InfoBoxes for filter {}", filter);
+			refreshInfoBoxes();
+		}
 	}
 
 	public List<InfoBox> getInfoBoxes()

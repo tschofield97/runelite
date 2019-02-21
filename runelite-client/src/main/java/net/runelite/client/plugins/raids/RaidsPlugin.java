@@ -166,6 +166,12 @@ public class RaidsPlugin extends Plugin
 		inRaidChambers = false;
 		raid = null;
 		timer = null;
+
+		final Widget widget = client.getWidget(WidgetInfo.RAIDS_POINTS_INFOBOX);
+		if (widget != null)
+		{
+			widget.setHidden(false);
+		}
 	}
 
 	@Subscribe
@@ -230,7 +236,7 @@ public class RaidsPlugin extends Plugin
 			{
 				if (timer != null)
 				{
-					timer.timeFloor();
+					timer.timeOlm();
 					timer.setStopped(true);
 				}
 
@@ -242,21 +248,21 @@ public class RaidsPlugin extends Plugin
 					double percentage = personalPoints / (totalPoints / 100.0);
 
 					String chatMessage = new ChatMessageBuilder()
-							.append(ChatColorType.NORMAL)
-							.append("Total points: ")
-							.append(ChatColorType.HIGHLIGHT)
-							.append(POINTS_FORMAT.format(totalPoints))
-							.append(ChatColorType.NORMAL)
-							.append(", Personal points: ")
-							.append(ChatColorType.HIGHLIGHT)
-							.append(POINTS_FORMAT.format(personalPoints))
-							.append(ChatColorType.NORMAL)
-							.append(" (")
-							.append(ChatColorType.HIGHLIGHT)
-							.append(DECIMAL_FORMAT.format(percentage))
-							.append(ChatColorType.NORMAL)
-							.append("%)")
-							.build();
+						.append(ChatColorType.NORMAL)
+						.append("Total points: ")
+						.append(ChatColorType.HIGHLIGHT)
+						.append(POINTS_FORMAT.format(totalPoints))
+						.append(ChatColorType.NORMAL)
+						.append(", Personal points: ")
+						.append(ChatColorType.HIGHLIGHT)
+						.append(POINTS_FORMAT.format(personalPoints))
+						.append(ChatColorType.NORMAL)
+						.append(" (")
+						.append(ChatColorType.HIGHLIGHT)
+						.append(DECIMAL_FORMAT.format(percentage))
+						.append(ChatColorType.NORMAL)
+						.append("%)")
+						.build();
 
 					chatMessageManager.queue(QueuedMessage.builder()
 						.type(ChatMessageType.CLANCHAT_INFO)
@@ -302,6 +308,7 @@ public class RaidsPlugin extends Plugin
 				raid.updateLayout(layout);
 				RotationSolver.solve(raid.getCombatRooms());
 				overlay.setScoutOverlayShown(true);
+				sendRaidLayoutMessage();
 			}
 			else if (!config.scoutOverlayAtBank())
 			{
@@ -314,6 +321,28 @@ public class RaidsPlugin extends Plugin
 		{
 			overlay.setScoutOverlayShown(false);
 		}
+	}
+
+	private void sendRaidLayoutMessage()
+	{
+		if (!config.layoutMessage())
+		{
+			return;
+		}
+
+		final String layout = getRaid().getLayout().toCodeString();
+		final String rooms = getRaid().toRoomString();
+		final String raidData = "[" + layout + "]: " + rooms;
+
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.CLANCHAT_INFO)
+			.runeLiteFormattedMessage(new ChatMessageBuilder()
+				.append(ChatColorType.HIGHLIGHT)
+				.append("Layout: ")
+				.append(ChatColorType.NORMAL)
+				.append(raidData)
+				.build())
+			.build());
 	}
 
 	private void updateInfoBoxState()

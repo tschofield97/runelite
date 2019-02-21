@@ -57,9 +57,9 @@ import static net.runelite.api.ItemID.BRUMA_ROOT;
 import net.runelite.api.MessageNode;
 import net.runelite.api.Player;
 import net.runelite.api.events.AnimationChanged;
+import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
-import net.runelite.api.events.SetMessage;
 import net.runelite.client.Notifier;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
@@ -206,21 +206,21 @@ public class WintertodtPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onSetMessage(SetMessage setMessage)
+	public void onChatMessage(ChatMessage chatMessage)
 	{
 		if (!isInWintertodt)
 		{
 			return;
 		}
 
-		ChatMessageType chatMessageType = setMessage.getType();
+		ChatMessageType chatMessageType = chatMessage.getType();
 
 		if (chatMessageType != ChatMessageType.SERVER && chatMessageType != ChatMessageType.FILTERED)
 		{
 			return;
 		}
 
-		MessageNode messageNode = setMessage.getMessageNode();
+		MessageNode messageNode = chatMessage.getMessageNode();
 		final WintertodtInterruptType interruptType;
 
 		if (messageNode.getValue().startsWith("The cold of"))

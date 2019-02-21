@@ -25,11 +25,10 @@
  */
 package net.runelite.client.plugins.loottracker;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.inject.Provides;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -93,13 +92,6 @@ public class LootTrackerPlugin extends Plugin
 	// Activity/Event loot handling
 	private static final Pattern CLUE_SCROLL_PATTERN = Pattern.compile("You have completed [0-9]+ ([a-z]+) Treasure Trails.");
 	private static final int THEATRE_OF_BLOOD_REGION = 12867;
-
-	private static final Splitter COMMA_SPLITTER = Splitter
-		.on(",")
-		.omitEmptyStrings()
-		.trimResults();
-
-	private static final Joiner COMMA_JOINER = Joiner.on(",").skipNulls();
 
 	@Inject
 	private ClientToolbar clientToolbar;
@@ -194,15 +186,15 @@ public class LootTrackerPlugin extends Plugin
 	{
 		if (event.getGroup().equals("loottracker"))
 		{
-			ignoredItems = COMMA_SPLITTER.splitToList(config.getIgnoredItems());
-			panel.updateIgnoredRecords();
+			ignoredItems = Text.fromCSV(config.getIgnoredItems());
+			SwingUtilities.invokeLater(panel::updateIgnoredRecords);
 		}
 	}
 
 	@Override
 	protected void startUp() throws Exception
 	{
-		ignoredItems = COMMA_SPLITTER.splitToList(config.getIgnoredItems());
+		ignoredItems = Text.fromCSV(config.getIgnoredItems());
 		panel = new LootTrackerPanel(this, itemManager);
 		spriteManager.getSpriteAsync(SpriteID.TAB_INVENTORY, 0, panel::loadHeaderIcon);
 
@@ -283,7 +275,7 @@ public class LootTrackerPlugin extends Plugin
 
 		if (lootTrackerClient != null && config.saveLoot())
 		{
-			LootRecord lootRecord = new LootRecord(name, LootRecordType.NPC, toGameItems(items));
+			LootRecord lootRecord = new LootRecord(name, LootRecordType.NPC, toGameItems(items), Instant.now());
 			lootTrackerClient.submit(lootRecord);
 		}
 	}
@@ -300,7 +292,7 @@ public class LootTrackerPlugin extends Plugin
 
 		if (lootTrackerClient != null && config.saveLoot())
 		{
-			LootRecord lootRecord = new LootRecord(name, LootRecordType.PLAYER, toGameItems(items));
+			LootRecord lootRecord = new LootRecord(name, LootRecordType.PLAYER, toGameItems(items), Instant.now());
 			lootTrackerClient.submit(lootRecord);
 		}
 	}
@@ -359,7 +351,7 @@ public class LootTrackerPlugin extends Plugin
 
 		if (lootTrackerClient != null && config.saveLoot())
 		{
-			LootRecord lootRecord = new LootRecord(eventType, LootRecordType.EVENT, toGameItems(items));
+			LootRecord lootRecord = new LootRecord(eventType, LootRecordType.EVENT, toGameItems(items), Instant.now());
 			lootTrackerClient.submit(lootRecord);
 		}
 	}
@@ -411,7 +403,7 @@ public class LootTrackerPlugin extends Plugin
 			ignoredItemSet.remove(name);
 		}
 
-		config.setIgnoredItems(COMMA_JOINER.join(ignoredItemSet));
+		config.setIgnoredItems(Text.toCSV(ignoredItemSet));
 		panel.updateIgnoredRecords();
 	}
 

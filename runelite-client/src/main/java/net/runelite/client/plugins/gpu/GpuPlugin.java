@@ -91,7 +91,8 @@ import net.runelite.client.util.OSType;
 @PluginDescriptor(
 	name = "GPU",
 	description = "Utilizes the GPU",
-	enabledByDefault = false
+	enabledByDefault = false,
+	tags = {"fog", "draw distance"}
 )
 @Slf4j
 public class GpuPlugin extends Plugin implements DrawCallbacks
@@ -101,6 +102,7 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 	private static final int SMALL_TRIANGLE_COUNT = 512;
 	private static final int FLAG_SCENE_BUFFER = Integer.MIN_VALUE;
 	static final int MAX_DISTANCE = 90;
+	static final int MAX_FOG_DEPTH = 100;
 
 	@Inject
 	private Client client;
@@ -1148,8 +1150,6 @@ public class GpuPlugin extends Plugin implements DrawCallbacks
 		{
 			gl.glTexSubImage2D(gl.GL_TEXTURE_2D, 0, 0, 0, width, height, gl.GL_BGRA, gl.GL_UNSIGNED_INT_8_8_8_8_REV, interfaceBuffer);
 		}
-
-		gl.glBindTexture(gl.GL_TEXTURE_2D, interfaceTexture);
 
 		if (client.isStretchedEnabled())
 		{
